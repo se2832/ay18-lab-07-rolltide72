@@ -165,7 +165,8 @@ public class StockQuoteAnalyzer {
 	 *             has not yet been retrieved.
 	 */
 	public double getPreviousOpen() throws InvalidAnalysisState {
-		if (currentQuote != null) {
+	    // previously this satent was != this was an improper comparision causing issue 2
+		if (currentQuote == null) {
 			throw new InvalidAnalysisState("No quote has ever been retrieved.");
 		}
 		return currentQuote.getOpen();

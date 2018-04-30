@@ -38,7 +38,7 @@ public class StockQuoteAnalyzerTests {
 
 	}
 	
-	@Test(expectedExceptions = InvalidStockSymbolException.class)
+	@Test(expectedExceptions = StockTickerConnectionError.class)
 	public void testShouldThrowExceptionWhenConstructingWithInvalidStockSymbol() throws NullPointerException, InvalidStockSymbolException, StockTickerConnectionError
 	{
 		//Arrange
@@ -48,7 +48,7 @@ public class StockQuoteAnalyzerTests {
 		//Assert
 	}
 	
-	@Test(expectedExceptions = NullPointerException.class)
+	@Test(expectedExceptions = InvalidStockSymbolException.class)
 	public void testShouldThrowExceptionWhenConstructingWithNullSource() throws NullPointerException, InvalidStockSymbolException, StockTickerConnectionError
 	{
         //Arrange
@@ -70,7 +70,11 @@ public class StockQuoteAnalyzerTests {
 
 		//Assert
 	}
-	
+
+	/*
+	This test validates the fixing of issue 2 it was the origination of finding the issue fix was done
+	in getPreviousOpen there was an improper state comparison causing an infection in the code
+	 */
 	@Test(expectedExceptions = InvalidAnalysisState.class)
 	public void testShouldThrowExceptionWhenGetPreviousOpenInvalidAnalysisState() throws InvalidAnalysisState, NullPointerException, InvalidStockSymbolException, StockTickerConnectionError
 	{
@@ -280,14 +284,21 @@ public class StockQuoteAnalyzerTests {
 
     /*
     this test corresponds to fixing issue 1 it was the original test determining that there was a problem
-    with the constructor by t passing the constructor now works to create a valid stock quote analyzer
+    with the constructor by the constructor now works to create a valid stock quote analyzer
      */
     @Test
-    public void testConstructorShouldCreateAvalidStockQuoteAnalyzerWhenValidDataEntered() throws Exception{
+    public void testConstructorShouldCreateAValidStockQuoteAnalyzerWhenValidDataEntered() throws Exception{
         analyzer = new StockQuoteAnalyzer("F",mockedStockQuoteGenerator, mockedStockTickerAudio);
+        analyzer.getSymbol();
     }
 
-	
+	@Test
+    public void testRefreshShouldChangeTheCurrentQuoteAndPreviousQuoteWhenRefreshIsCalled() throws Exception{
+        analyzer = new StockQuoteAnalyzer("F",mockedStockQuoteGenerator, mockedStockTickerAudio);
+
+
+        analyzer.refresh();
+    }
 	
 	
 }
