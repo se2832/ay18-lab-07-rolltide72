@@ -278,7 +278,14 @@ public class StockQuoteAnalyzerTests {
         Assert.assertEquals(analyzer.getPreviousOpen(), firstReturn.getOpen(), 0.01);
 	}
 
-	
+    /*
+    this test corresponds to fixing issue 1 it was the original test determining that there was a problem
+    with the constructor by t passing the constructor now works to create a valid stock quote analyzer
+     */
+    @Test
+    public void testConstructorShouldCreateAvalidStockQuoteAnalyzerWhenValidDataEntered() throws Exception{
+        analyzer = new StockQuoteAnalyzer("F",mockedStockQuoteGenerator, mockedStockTickerAudio);
+    }
 
 	
 	

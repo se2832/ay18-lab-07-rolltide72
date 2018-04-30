@@ -82,13 +82,15 @@ public class StockQuoteAnalyzer {
 	 *             quote source.
 	 */
 
+
 	public StockQuoteAnalyzer(String symbol, StockQuoteGeneratorInterface stockQuoteSource,
 			StockTickerAudioInterface audioPlayer)
 			throws InvalidStockSymbolException, NullPointerException, StockTickerConnectionError {
 		super();
 
 		// Check the validity of the symbol.
-		if (StockTickerListing.getSingleton().isValidTickerSymbol(symbol) != true) {
+		//changed !=  to == to fix issue 1
+		if (StockTickerListing.getSingleton().isValidTickerSymbol(symbol) == true) {
 			this.symbol = symbol;
 		} else {
 			throw new StockTickerConnectionError("Symbol " + symbol + "not found.");
