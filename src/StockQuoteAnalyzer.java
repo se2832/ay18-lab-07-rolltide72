@@ -93,13 +93,14 @@ public class StockQuoteAnalyzer {
 		if (StockTickerListing.getSingleton().isValidTickerSymbol(symbol) == true) {
 			this.symbol = symbol;
 		} else {
-			throw new StockTickerConnectionError("Symbol " + symbol + "not found.");
-		}
-		if (stockQuoteSource == null) {
-			throw new InvalidStockSymbolException("The source for stock quotes can not be null");
-		}
+            throw new StockTickerConnectionError("Symbol " + symbol + "not found.");
+        }
+        if (stockQuoteSource == null) {
+            throw new InvalidStockSymbolException("The source for stock quotes can not be null");
+        }
 		this.stockQuoteSource = stockQuoteSource;
 		this.audioPlayer = audioPlayer;
+
 	}
 
 	/**
@@ -114,8 +115,9 @@ public class StockQuoteAnalyzer {
 		try {
 			StockQuoteInterface temp = this.stockQuoteSource.getCurrentQuote();
 
-			this.previousQuote = currentQuote;
-			this.currentQuote = this.previousQuote;
+			//this originally was assigning currentQuote to previous quote causing the state of them to never change is part of fixing #4
+			this.previousQuote = this.currentQuote;
+			this.currentQuote = temp;
 		} catch (Exception e) {
 			throw new StockTickerConnectionError("Unable to connect with Stock Ticker Source.");
 		}
@@ -239,7 +241,8 @@ public class StockQuoteAnalyzer {
 			throw new InvalidAnalysisState("No quote has ever been retrieved.");
 		}
 		if (previousQuote == null) {
-			throw new InvalidAnalysisState("A second update has not yet occurred.");
+		    //this line was changed in reference to issue 3 since there was no previous quote there is no change
+            return 0.0; //no change if only one quote.
 		}
 
 		return currentQuote.getLastTrade() - previousQuote.getChange();

@@ -152,6 +152,9 @@ public class StockQuoteAnalyzerTests {
 		verify(mockedStockTickerAudio, times(0)).playSadMusic();
 	}
 
+	/*
+	this test was the reason for finding issue number 3 and 4
+	 */
     @Test
 	public void testShouldGetChangeSinceLastCheckOneUpdate() throws Exception
 	{
@@ -163,7 +166,7 @@ public class StockQuoteAnalyzerTests {
 		analyzer.refresh();
 
 		// Assert
-		Assert.assertEquals(0.0, analyzer.getChangeSinceLastCheck());
+		Assert.assertEquals(analyzer.getChangeSinceLastCheck(), 0.0);
 	}
 
 	@DataProvider
