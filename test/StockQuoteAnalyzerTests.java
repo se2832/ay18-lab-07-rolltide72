@@ -38,7 +38,7 @@ public class StockQuoteAnalyzerTests {
 
 	}
 	
-	@Test(expectedExceptions = StockTickerConnectionError.class)
+	@Test(expectedExceptions = InvalidStockSymbolException.class)
 	public void testShouldThrowExceptionWhenConstructingWithInvalidStockSymbol() throws NullPointerException, InvalidStockSymbolException, StockTickerConnectionError
 	{
 		//Arrange
@@ -48,7 +48,7 @@ public class StockQuoteAnalyzerTests {
 		//Assert
 	}
 	
-	@Test(expectedExceptions = InvalidStockSymbolException.class)
+	@Test(expectedExceptions = NullPointerException.class)
 	public void testShouldThrowExceptionWhenConstructingWithNullSource() throws NullPointerException, InvalidStockSymbolException, StockTickerConnectionError
 	{
         //Arrange
