@@ -220,8 +220,7 @@ public class StockQuoteAnalyzer {
 		if (currentQuote == null) {
 			throw new InvalidAnalysisState("No quote has ever been retrieved.");
 		}
-
-		return Math.round((10000 * this.currentQuote.getChange() / this.currentQuote.getOpen())) % 100.0;
+        return Math.round((10000 * this.currentQuote.getChange() / this.currentQuote.getOpen())) % 10000.0 * .01;
 	}
 
 	/**
