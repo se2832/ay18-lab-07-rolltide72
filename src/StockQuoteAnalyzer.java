@@ -246,7 +246,7 @@ public class StockQuoteAnalyzer {
 
 		// this line was changed in reference to issue 7 and issue 8 by subtracting the previous
         // quote's last trade instead of the previous quote's change
-		return currentQuote.getLastTrade() - previousQuote.getChange();//previousQuote.getLastTrade();
+		return currentQuote.getLastTrade() - previousQuote.getLastTrade();
 	}
 
 	/**
