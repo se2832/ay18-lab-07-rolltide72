@@ -87,24 +87,22 @@ public class StockQuoteAnalyzer {
 			StockTickerAudioInterface audioPlayer)
 			throws InvalidStockSymbolException, NullPointerException, StockTickerConnectionError {
 		super();
-
 		// Check the validity of the symbol.
-		//changed !=  to == to fix issue 1
-		if (StockTickerListing.getSingleton().isValidTickerSymbol(symbol) == true) {
-			this.symbol = symbol;
-		} else {
+        //changed !=  to == to fix issue 1
+        if (StockTickerListing.getSingleton().isValidTickerSymbol(symbol) == true) {
+            this.symbol = symbol;
+        } else {
 
-		    // This line was changed to throw the proper exception for the situation
+            // This line was changed to throw the proper exception for the situation
             throw new InvalidStockSymbolException("Symbol " + symbol + "not found.");
         }
         if (stockQuoteSource == null) {
 
-		    // This line was changed to throw the proper exception for the situation
+            // This line was changed to throw the proper exception for the situation
             throw new NullPointerException("The source for stock quotes can not be null");
         }
-		this.stockQuoteSource = stockQuoteSource;
-		this.audioPlayer = audioPlayer;
-
+        this.stockQuoteSource = stockQuoteSource;
+        this.audioPlayer = audioPlayer;
 	}
 
 	/**

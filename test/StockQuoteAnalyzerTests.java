@@ -71,6 +71,18 @@ public class StockQuoteAnalyzerTests {
 		//Assert
 	}
 
+	@Test
+	public void testGetCurrentQuoteShouldReturnNullWhenThereIsNoCurrentQuote() throws InvalidStockSymbolException, StockTickerConnectionError {
+		// Arrange
+		analyzer = new StockQuoteAnalyzer("F", mockedStockQuoteGenerator, mockedStockTickerAudio);
+		StockQuoteInterface expectedResult = null;
+
+		// Act
+		StockQuoteInterface actualResult = analyzer.getCurrentQuote();
+		// Assert
+		Assert.assertEquals(expectedResult, actualResult);
+	}
+
 	/*
 	This test validates the fixing of issue 2 it was the origination of finding the issue fix was done
 	in getPreviousOpen there was an improper state comparison causing an infection in the code
