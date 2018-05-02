@@ -70,7 +70,23 @@ public class StockQuoteAnalyzerTests {
 
 		//Assert
 	}
-	
+
+	@Test
+	public void testGetCurrentQuoteShouldReturnNullWhenThereIsNoCurrentQuote() throws InvalidStockSymbolException, StockTickerConnectionError {
+		// Arrange
+		analyzer = new StockQuoteAnalyzer("F", mockedStockQuoteGenerator, mockedStockTickerAudio);
+		StockQuoteInterface expectedResult = null;
+
+		// Act
+		StockQuoteInterface actualResult = analyzer.getCurrentQuote();
+		// Assert
+		Assert.assertEquals(expectedResult, actualResult);
+	}
+
+	/*
+	This test validates the fixing of issue 2 it was the origination of finding the issue fix was done
+	in getPreviousOpen there was an improper state comparison causing an infection in the code
+	 */
 	@Test(expectedExceptions = InvalidAnalysisState.class)
 	public void testShouldThrowExceptionWhenGetPreviousOpenInvalidAnalysisState() throws InvalidAnalysisState, NullPointerException, InvalidStockSymbolException, StockTickerConnectionError
 	{
@@ -148,6 +164,9 @@ public class StockQuoteAnalyzerTests {
 		verify(mockedStockTickerAudio, times(0)).playSadMusic();
 	}
 
+	/*
+	this test was the reason for finding issue number 3 and 4
+	 */
     @Test
 	public void testShouldGetChangeSinceLastCheckOneUpdate() throws Exception
 	{
@@ -159,7 +178,7 @@ public class StockQuoteAnalyzerTests {
 		analyzer.refresh();
 
 		// Assert
-		Assert.assertEquals(0.0, analyzer.getChangeSinceLastCheck());
+		Assert.assertEquals(analyzer.getChangeSinceLastCheck(), 0.0);
 	}
 
 	@DataProvider
@@ -278,9 +297,23 @@ public class StockQuoteAnalyzerTests {
         Assert.assertEquals(analyzer.getPreviousOpen(), firstReturn.getOpen(), 0.01);
 	}
 
-	
+    /*
+    this test corresponds to fixing issue 1 it was the original test determining that there was a problem
+    with the constructor by the constructor now works to create a valid stock quote analyzer
+     */
+    @Test
+    public void testConstructorShouldCreateAValidStockQuoteAnalyzerWhenValidDataEntered() throws Exception{
+        analyzer = new StockQuoteAnalyzer("F",mockedStockQuoteGenerator, mockedStockTickerAudio);
+        analyzer.getSymbol();
+    }
 
-	
+	@Test
+    public void testRefreshShouldChangeTheCurrentQuoteAndPreviousQuoteWhenRefreshIsCalled() throws Exception{
+        analyzer = new StockQuoteAnalyzer("F",mockedStockQuoteGenerator, mockedStockTickerAudio);
+
+
+        analyzer.refresh();
+    }
 	
 	
 }

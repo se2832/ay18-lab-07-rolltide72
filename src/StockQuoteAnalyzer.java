@@ -82,22 +82,27 @@ public class StockQuoteAnalyzer {
 	 *             quote source.
 	 */
 
+
 	public StockQuoteAnalyzer(String symbol, StockQuoteGeneratorInterface stockQuoteSource,
 			StockTickerAudioInterface audioPlayer)
 			throws InvalidStockSymbolException, NullPointerException, StockTickerConnectionError {
 		super();
-
 		// Check the validity of the symbol.
-		if (StockTickerListing.getSingleton().isValidTickerSymbol(symbol) != true) {
-			this.symbol = symbol;
-		} else {
-			throw new StockTickerConnectionError("Symbol " + symbol + "not found.");
-		}
-		if (stockQuoteSource == null) {
-			throw new InvalidStockSymbolException("The source for stock quotes can not be null");
-		}
-		this.stockQuoteSource = stockQuoteSource;
-		this.audioPlayer = audioPlayer;
+        //changed !=  to == to fix issue 1
+        if (StockTickerListing.getSingleton().isValidTickerSymbol(symbol) == true) {
+            this.symbol = symbol;
+        } else {
+
+            // This line was changed to throw the proper exception for the situation
+            throw new InvalidStockSymbolException("Symbol " + symbol + "not found.");
+        }
+        if (stockQuoteSource == null) {
+
+            // This line was changed to throw the proper exception for the situation
+            throw new NullPointerException("The source for stock quotes can not be null");
+        }
+        this.stockQuoteSource = stockQuoteSource;
+        this.audioPlayer = audioPlayer;
 	}
 
 	/**
@@ -112,8 +117,9 @@ public class StockQuoteAnalyzer {
 		try {
 			StockQuoteInterface temp = this.stockQuoteSource.getCurrentQuote();
 
-			this.previousQuote = currentQuote;
-			this.currentQuote = this.previousQuote;
+			//this originally was assigning currentQuote to previous quote causing the state of them to never change is part of fixing #4
+			this.previousQuote = this.currentQuote;
+			this.currentQuote = temp;
 		} catch (Exception e) {
 			throw new StockTickerConnectionError("Unable to connect with Stock Ticker Source.");
 		}
@@ -132,10 +138,10 @@ public class StockQuoteAnalyzer {
 	public void playAppropriateAudio() {
 		if (audioPlayer != null) {
 			try {
-				if ((this.getPercentChangeSinceOpen() > 1) || (this.getChangeSinceLastCheck()!=1.00)) {
+				if ((this.getPercentChangeSinceOpen() > 1) || (this.getChangeSinceLastCheck() > 1.00)) {
 					audioPlayer.playHappyMusic();
 				}
-				if ((this.getPercentChangeSinceOpen() < 0) && (this.getChangeSinceLastCheck()<1.00)) {
+				if ((this.getPercentChangeSinceOpen() < -1) || (this.getChangeSinceLastCheck() < -1.00)) {
 					audioPlayer.playSadMusic();
 				}
 			} catch (InvalidAnalysisState e) {
@@ -163,7 +169,8 @@ public class StockQuoteAnalyzer {
 	 *             has not yet been retrieved.
 	 */
 	public double getPreviousOpen() throws InvalidAnalysisState {
-		if (currentQuote != null) {
+	    // previously this satent was != this was an improper comparision causing issue 2
+		if (currentQuote == null) {
 			throw new InvalidAnalysisState("No quote has ever been retrieved.");
 		}
 		return currentQuote.getOpen();
@@ -215,8 +222,7 @@ public class StockQuoteAnalyzer {
 		if (currentQuote == null) {
 			throw new InvalidAnalysisState("No quote has ever been retrieved.");
 		}
-
-		return Math.round((10000 * this.currentQuote.getChange() / this.currentQuote.getOpen())) % 100.0;
+        return Math.round((10000 * this.currentQuote.getChange() / this.currentQuote.getOpen())) % 10000.0 * .01;
 	}
 
 	/**
@@ -236,10 +242,13 @@ public class StockQuoteAnalyzer {
 			throw new InvalidAnalysisState("No quote has ever been retrieved.");
 		}
 		if (previousQuote == null) {
-			throw new InvalidAnalysisState("A second update has not yet occurred.");
+		    //this line was changed in reference to issue 3 since there was no previous quote there is no change
+            return 0.0; //no change if only one quote.
 		}
 
-		return currentQuote.getLastTrade() - previousQuote.getChange();
+		// this line was changed in reference to issue 7 and issue 8 by subtracting the previous
+        // quote's last trade instead of the previous quote's change
+		return currentQuote.getLastTrade() - previousQuote.getLastTrade();
 	}
 
 	/**
