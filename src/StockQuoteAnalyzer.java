@@ -139,7 +139,7 @@ public class StockQuoteAnalyzer {
 				if ((this.getPercentChangeSinceOpen() > 1) || (this.getChangeSinceLastCheck() > 1.00)) {
 					audioPlayer.playHappyMusic();
 				}
-				if ((this.getPercentChangeSinceOpen() < -1) && (this.getChangeSinceLastCheck() < -1.00)) {
+				if ((this.getPercentChangeSinceOpen() < -1) || (this.getChangeSinceLastCheck() < -1.00)) {
 					audioPlayer.playSadMusic();
 				}
 			} catch (InvalidAnalysisState e) {
@@ -244,7 +244,9 @@ public class StockQuoteAnalyzer {
             return 0.0; //no change if only one quote.
 		}
 
-		return currentQuote.getLastTrade() - previousQuote.getChange();
+		// this line was changed in reference to issue 7 and issue 8 by subtracting the previous
+        // quote's last trade instead of the previous quote's change
+		return currentQuote.getLastTrade() - previousQuote.getChange();//previousQuote.getLastTrade();
 	}
 
 	/**
