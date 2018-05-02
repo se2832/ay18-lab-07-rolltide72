@@ -93,10 +93,14 @@ public class StockQuoteAnalyzer {
 		if (StockTickerListing.getSingleton().isValidTickerSymbol(symbol) == true) {
 			this.symbol = symbol;
 		} else {
-            throw new StockTickerConnectionError("Symbol " + symbol + "not found.");
+
+		    // This line was changed to throw the proper exception for the situation
+            throw new InvalidStockSymbolException("Symbol " + symbol + "not found.");
         }
         if (stockQuoteSource == null) {
-            throw new InvalidStockSymbolException("The source for stock quotes can not be null");
+
+		    // This line was changed to throw the proper exception for the situation
+            throw new NullPointerException("The source for stock quotes can not be null");
         }
 		this.stockQuoteSource = stockQuoteSource;
 		this.audioPlayer = audioPlayer;
